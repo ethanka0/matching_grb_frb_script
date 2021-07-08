@@ -10,4 +10,5 @@ Usage requirements:
 - The package 'pandas' is required which can be installed here: https://pandas.pydata.org/getting_started.html
 
 This script was produced by Ethan H. Kao at the Laboratory for Space Research (HKU)
+
 For any questions, contact: ethankao0910@gmail.com
