@@ -1,3 +1,5 @@
+#Produced by Ethan H. Kao
+
 import pandas as pd
 import math
 import time
@@ -42,7 +44,7 @@ print (" This script can be adapted and modified for any .csv or .txt file by ch
 u_time = input ("Please input uncertainty of time in seconds i.e. ['3600' for an hour], ['86400' for a day]:  ")
 u_time = float(u_time)
 
-while counter_chime < 599: # of rows of chime data
+while counter_chime < 599: # of rows of chime data; change the title of the columns
 	progress_bar()
 	counter_fermi = 0
 	frbcode = frbcatalog.at[counter_chime, 'tns_name']
@@ -55,7 +57,7 @@ while counter_chime < 599: # of rows of chime data
 	chime_cdec = float(chime_cdec)
 	chime_ctime = float(chime_ctime)
 	counter_chime +=1
-	while counter_fermi < 43236723: # of rows of FERMI data
+	while counter_fermi < 43236723: # of rows of FERMI data; .iat can be used if table lacks a column name
 		grbcode = grbcatalog.iat[counter_fermi, 3]
 		fermi_cra = grbcatalog.iat[counter_fermi, 0]
 		fermi_cdec = grbcatalog.iat[counter_fermi, 1]
