@@ -1,16 +1,14 @@
-#Produced by Ethan H. Kao
-
 import pandas as pd
 import math
 import time
 
 start = time.process_time()
 
-counter_chime = 500
+counter_chime = 1
 counter_fermi = 0
 progress = 0
 def progress_bar():
-	progress = (counter_chime / 599) * 100
+	progress = (counter_chime / frbevents_num) * 100
 	progress = str(progress)
 	print ("Progress: " + progress + "%")
 
@@ -32,19 +30,30 @@ frb_overlap_loc = []
 grb_overlap_time_loc = []
 frb_overlap_time_loc = []
 
-frbcatalog = pd.read_csv('chime4.csv') #CHIME data file
-grbcatalog = pd.read_csv('lat_alldata_loc_time.csv') #LAT data file
-f=open("matchingloc2.txt", "w") #File that only lists events matching origin
-g=open("matchingloc_and_time2.txt", "w") #File that only lists events matching origin and time
 
 
-
-print ("This script uses CHIME's 1st catalog and Fermi data to find FRBs and GRBs that could originate from the same place.")
-print (" This script can be adapted and modified for any .csv or .txt file by changing the lines with comments.")
+grbcatalog_name = input ("Please input name of the LAT data file with the .csv tag and fulfilling the following requirements: \n ra in column 1 \n dec in column 2 \n event time in column 3 \n photon label in column 4\n")
+fermievents_num = input ("Please input the number of entries in the LAT data file: ")
+fermievents_num = int(fermievents_num)
+fermievents_num = fermievents_num - 1
+frbcatalog_name = input ("Please input name of the CHIME catalog with the .csv tag and fulfilling the following requirements: \n frb code under column named 'tns_name' \n ra under column named 'ra' \n dec under column named 'dec' \n ra uncertainty under column named 'ra_err' \n dec uncertainty under column named 'dec_err' \n event observed time under column named 'time'")
+frbevents_num = input ("Please input number of entries in the CHIME catalog: ")
+frbevents_num = int(frbevents_num)
+frbevents_num = frbevents_num - 1
 u_time = input ("Please input uncertainty of time in seconds i.e. ['3600' for an hour], ['86400' for a day]:  ")
+
+u_time = str(u_time)
+name_file1 = "matchingloc_" + u_time + "s.txt"
+name_file2 = "matchingloc_and_time_" + u_time + "s.txt"
 u_time = float(u_time)
 
-while counter_chime < 599: # of rows of chime data; change the title of the columns
+frbcatalog = pd.read_csv(frbcatalog_name) #CHIME data file
+grbcatalog = pd.read_csv(grbcatalog_name) #LAT data file
+f=open(name_file1, "w") #File that only lists events matching origin
+g=open(name_file2, "w") #File that only lists events matching origin and time
+
+
+while counter_chime < frbevents_num : # of rows of chime data
 	progress_bar()
 	counter_fermi = 0
 	frbcode = frbcatalog.at[counter_chime, 'tns_name']
@@ -57,7 +66,7 @@ while counter_chime < 599: # of rows of chime data; change the title of the colu
 	chime_cdec = float(chime_cdec)
 	chime_ctime = float(chime_ctime)
 	counter_chime +=1
-	while counter_fermi < 43236723: # of rows of FERMI data; .iat can be used if table lacks a column name
+	while counter_fermi < fermievents_num: # of rows of FERMI data
 		grbcode = grbcatalog.iat[counter_fermi, 3]
 		fermi_cra = grbcatalog.iat[counter_fermi, 0]
 		fermi_cdec = grbcatalog.iat[counter_fermi, 1]
@@ -75,7 +84,7 @@ while counter_chime < 599: # of rows of chime data; change the title of the colu
 			if timedif <= u_time:
 				g.write("\n"+ str(frbcode) + " matches in time and space with " + str(grbcode))
 				grb_overlap_time_loc.append(grbcode)
-				grb_overlap_time_loc.append(frbcode)
+				frb_overlap_time_loc.append(frbcode)
 				counter_fermi +=1
 				print ("----------MATCH FOUND----------")
 				print (str(frbcode) + " matches in time and space with " + str(grbcode))
